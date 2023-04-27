@@ -1,0 +1,47 @@
+# LANGUAGE AND CHARSET #
+
+DefaultLanguage pt-BR
+AddDefaultCharset utf-8
+
+# ACCESS EXTERNAL #
+
+Header set Access-Control-Allow-Origin "*"
+
+# COMPRESS #
+
+AddOutputFilterByType DEFLATE text/text text/plain
+AddOutputFilterByType DEFLATE text/html text/xhtml application/xhtml+xml
+AddOutputFilterByType DEFLATE text/css application/css
+AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/ecmascript
+AddOutputFilterByType DEFLATE text/json application/json
+AddOutputFilterByType DEFLATE text/xml application/xml application/rss+xml application/atom+xml
+AddOutputFilterByType DEFLATE application/x-font-ttf font/opentype
+AddOutputFilterByType DEFLATE image/svg+xml image/xml image/x-icon
+
+# CACHE #
+
+ExpiresActive On
+ExpiresDefault "access plus 300 seconds"
+
+<filesMatch "\.(pdf|ico|gif|jpg|jpeg|png|swf|flv|mp4)$">
+	Header set Cache-Control "max-age=2592000, public"
+	ExpiresDefault "access plus 1 month"
+</filesMatch>
+
+<filesMatch "\.(js|css)$">
+	Header set Cache-Control "max-age=604800, public"
+ 	ExpiresDefault "access plus 1 week"
+</filesMatch>
+
+SetEnvIfNoCase REQUEST_URI \.(?:ico|gif|jpg|jpeg|png)$ no-gzip dont-vary
+Header append Vary User-Agent env=!dont-vary
+
+# REWRITE #
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?$1&%{QUERY_STRING} [L]
+
+#
